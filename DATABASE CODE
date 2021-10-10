@@ -1,0 +1,193 @@
+CREATE TABLE Doctor (
+  Doctor_License_No VARCHAR(20),
+  Doctors_FirstName VARCHAR(10),
+  Doctors_LastName VARCHAR(10),
+  Doctors_Email_ID VARCHAR(20),
+  Doctors_Phone VARCHAR(11),
+  Doctor_Specialty VARCHAR(20),
+  Doctor_Education VARCHAR(20),
+  Supported_Insurance VARCHAR(10),
+  PRIMARY KEY (Doctor_License_No)
+);
+
+CREATE TABLE Cardiologist (
+  Doctor_License_No VARCHAR(20),
+  PRIMARY KEY (Doctor_License_No),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+CREATE TABLE Dermatologist (
+  Doctor_License_No VARCHAR(20),
+  PRIMARY KEY (Doctor_License_No),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+CREATE TABLE Paediatrician (
+  Doctor_License_No VARCHAR(20),
+  PRIMARY KEY (Doctor_License_No),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+CREATE TABLE General (
+  Doctor_License_No VARCHAR(20),
+  PRIMARY KEY (Doctor_License_No),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+CREATE TABLE Doctor_Profile (
+  Doctor_Prof_Membership_ID VARCHAR(10),
+  Doctor_License_No VARCHAR(10),
+  Doctor_Prof_Membership VARCHAR(30),
+  PRIMARY KEY (Doctor_Prof_Membership_ID,Doctor_License_No),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+CREATE TABLE Location (
+  Location_ID VARCHAR(10),
+  Location_Zip_Code INT,
+  Location_Area VARCHAR(25),
+  Location_Neighborhood VARCHAR(25),
+  PRIMARY KEY (Location_ID, Location_Zip_Code)
+);
+
+CREATE TABLE Location_Mapping (
+  Location_ID VARCHAR(10),
+  Location_Zip_Code INT,
+  Doctor_License_No VARCHAR(10),
+  Clinic_Address_Line1 VARCHAR(20),
+  Clinic_Address_Line2 VARCHAR(20),
+  PRIMARY KEY (
+    Location_ID,
+    Location_Zip_Code,
+    Doctor_License_No
+  ),
+  FOREIGN KEY(Location_ID, Location_Zip_Code) REFERENCES Location(Location_ID, Location_Zip_Code),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+CREATE TABLE Loc_Uttara (
+  Location_ID VARCHAR(10),
+  Location_Zip_Code INT,
+  PRIMARY KEY (Location_ID, Location_Zip_Code),
+  FOREIGN KEY(Location_ID, Location_Zip_Code) REFERENCES Location(Location_ID, Location_Zip_Code)
+);
+
+CREATE TABLE Loc_Motijheel (
+  Location_ID VARCHAR(10),
+  Location_Zip_Code INT,
+  PRIMARY KEY (Location_ID, Location_Zip_Code),
+  FOREIGN KEY(Location_ID, Location_Zip_Code) REFERENCES Location(Location_ID, Location_Zip_Code)
+);
+
+CREATE TABLE Loc_Dhanmondi (
+  Location_ID VARCHAR(10),
+  Location_Zip_Code INT,
+  PRIMARY KEY (Location_ID, Location_Zip_Code),
+  FOREIGN KEY(Location_ID, Location_Zip_Code) REFERENCES Location(Location_ID, Location_Zip_Code)
+);
+
+
+CREATE TABLE Patient (
+  Patient_ID VARCHAR(10),
+  Patient_FirstName VARCHAR(20),
+  Patient_LastName VARCHAR(20),
+  Patient_Email_ID VARCHAR(20),
+  Patient_Phone INT,
+  Patient_Address_Line1 VARCHAR(30),
+  Patient_Address_Line2 VARCHAR(30),
+  Location_ID VARCHAR(10),
+  Location_Zip_Code INT,
+  PRIMARY KEY (Patient_ID),
+  FOREIGN KEY(Location_ID, Location_Zip_Code) REFERENCES Location(Location_ID, Location_Zip_Code)
+);
+
+CREATE TABLE Insurance (
+  Insurance_ID VARCHAR(10),
+  Insurance_Name VARCHAR(10),
+  Payer_ID INT,
+  Patient_ID VARCHAR(10),
+  PRIMARY KEY (Insurance_ID),
+  FOREIGN KEY(Patient_ID) REFERENCES Patient(Patient_ID)
+);
+
+CREATE TABLE UHC (
+  Insurance_ID VARCHAR(10),
+  PRIMARY KEY (Insurance_ID),
+  FOREIGN KEY(Insurance_ID) REFERENCES Insurance(Insurance_ID)
+);
+
+CREATE TABLE WellPoint (
+  Insurance_ID VARCHAR(10),
+  PRIMARY KEY (Insurance_ID),
+  FOREIGN KEY(Insurance_ID) REFERENCES Insurance(Insurance_ID)
+);
+
+CREATE TABLE GHI (
+  Insurance_ID VARCHAR(10),
+  PRIMARY KEY (Insurance_ID),
+  FOREIGN KEY(Insurance_ID) REFERENCES Insurance(Insurance_ID)
+);
+
+
+CREATE TABLE Doctor_Review (
+  Review_Reference VARCHAR(20),
+  Patient_ID VARCHAR(15),
+  Review_Comment VARCHAR(25),
+  Review_Rating VARCHAR(30),
+  Review_Date DATE,
+  Doctor_License_No VARCHAR(10),
+  PRIMARY KEY (Review_Reference, Patient_ID),
+  FOREIGN KEY(Patient_ID) REFERENCES Patient(Patient_ID),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+
+
+CREATE TABLE Medical_Record (
+  Record_ID VARCHAR(10),
+  Patient_ID VARCHAR(10),
+  Appointment_ID VARCHAR(10),
+  PRIMARY KEY (Record_ID),
+  FOREIGN KEY(Patient_ID) REFERENCES Patient(Patient_ID),
+  
+);
+
+CREATE TABLE Visit (
+  Visit_ID VARCHAR(10),
+  Visit_Purpose VARCHAR(20),
+  Record_ID VARCHAR(10),
+  PRIMARY KEY(Visit_ID),
+  FOREIGN KEY(Record_ID) REFERENCES Medical_Record(Record_ID)
+);
+
+
+CREATE TABLE Appointment (
+  Appointment_ID VARCHAR(10),
+  Appointment_Date DATE,
+  Appointment_Time TIME,
+  Appointment_Status VARCHAR(20),
+  Patient_ID VARCHAR(10),
+  Visit_ID VARCHAR(10),
+  Doctor_License_No VARCHAR(20),
+  PRIMARY KEY (Appointment_ID),
+  FOREIGN KEY(Patient_ID) REFERENCES Patient(Patient_ID),
+  FOREIGN KEY(Visit_ID) REFERENCES Visit(Visit_ID),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+
+CREATE TABLE Bill (
+  Bill_ID VARCHAR(10),
+  Insurance_ID VARCHAR(10),
+  Doctor_License_No VARCHAR(20),
+  PRIMARY KEY (Bill_ID),
+  FOREIGN KEY(Insurance_ID) REFERENCES Insurance(Insurance_ID),
+  FOREIGN KEY(Doctor_License_No) REFERENCES Doctor(Doctor_License_No)
+);
+
+CREATE TABLE Payment (
+  Payment_ID VARCHAR(12),
+  Bill_ID VARCHAR(10),
+  PRIMARY KEY (Payment_ID),
+  FOREIGN KEY(Bill_ID) REFERENCES Bill(Bill_ID)
+);
