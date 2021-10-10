@@ -253,8 +253,11 @@ td button{
 	cursor: pointer;
 
 }
-.table-responsive td button:hover{
+ td button:hover{
 transform: scale(1.1);
+}
+td button a{
+	color: white;
 }
 
 
@@ -535,3 +538,5 @@ background-color: #799c9c;
 	font-weight: 600;
 	color: black;
 }
+
+
